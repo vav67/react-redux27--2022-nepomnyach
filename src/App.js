@@ -1,25 +1,31 @@
-import logo from './logo.svg';
-import './App.css';
+import {useEffect} from 'react';
+import {useDispatch} from 'react-redux';
 
-function App() {
+import { FilterPanel } from './components/FilterPanel';
+import { JobList } from './components/JobList';
+import { TheHeader } from './components/TheHeader';
+
+//import "./styles.css";
+//ожидает позиции
+import {addPositions} from './store/positions/position-actions';
+//сами данные
+import data from './mock/data.json';
+
+export default function App() {
+
+    const dispatch = useDispatch()
+
+    useEffect(() => {
+        dispatch(addPositions(data))
+    })
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
-}
+      <div className="container">
+          <TheHeader />
+        <h1>Hello Redux</h1>
+          <FilterPanel />
+          <JobList />
 
-export default App;
+      </div>
+  )
+}

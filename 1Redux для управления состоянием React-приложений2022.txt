@@ -1,0 +1,972 @@
+Курс 
+[Udemy] Redux для управления состоянием React-приложений (2022)
+=======================================================================================
+01 Introduction - 002 Что такое Redux
+
+Redux - система упраления состоянием приложения 
+Классическое реакт приложение- однонаправленный поток данных между компонентами и
+вниз через пропсы спускаются св-ва и ф-и, а наверх мы можем передать только путем
+вызова ф-ции. Чтоб обновить другой узел, ф-цию много раз нужно пробрасывать.
+Redax - имеет единое хранилище и где бы не жил в приложении компонент , он всегда
+может забрать из хранилища Store данные и методы для обновления,лишние пробросы
+пропсов уйдут из приложения.Теперь быстрее прорисовка, а некоторые пропсы можно
+оставить.
+ Redax при взаимодействии с Reactom  притерпивал разные изменения, когда были
+классовые компоненты, когда появились хуки для функциональных компонентов, а сейчас
+на сайте redux.js.org рекомендует работать с пакетом Redux Toolkit что упрощает
+взаимодействие с Redux
+                                   App  =data
+                --------------------|---------------------------
+ 		|						|
+	    SideBar					    Content
+		|						|
+		|					----------------
+	      List					|		|
+		|				      =Header=data    Block
+  	    =ListItem=data						|
+								      =Text=data
+Информация data проходит к нижним узлам через все узлы.
+Лучше если будет Context - напрямую передает data к  ListItem,Header,Text
+В роли Context  могут выступать различные сущности, в данном случае это
+будет сущность как Redux
+ 
+---------------------  003 Варианты state managment для React
+  Redux - менеджер состояния
+встроенный в React инструмент - контекст позволяющий любому компоненту из
+него получить информацию, но считается что подходит для небольших проектов.
+Чем больше проект, тем сложнее логика поэтом предлагают альтернативные
+инструменты- библиотеки управления состоянием, например:
+ Recoil, MobX (ближе к ООП), Xstate
+
+ ------------------- 004 Пререквизит к курсу
+React надо уже уметь создавать компоненты, использовать пропсы и хуки, возможно даже
+классовые компоненты писать.
+ 
+------------------- 005 Окружение для работы
+CodeSandbox
+https://codesandbox.io/ или node.js и редактор кода и для  VS Code - ES7+... плагин
+
+=====ЧАСТЬ 02 Redux==========================================================
+--------------- 006 Обзор модуля.
+три принципа Redux; Базовые сущности Redux; Базовое API; Вариативность
+--------------  007 Три принципа Redux
+единый источник  const store = { сущности информац-е } (все то что раньше 
+в React хранили в state через useState либо setState в класовых компонентах
+останется часть ин-ции
+Мы только можем читать иф-цию  из  state, не перезаписываем не мутируем на
+прямую.Перезаписывать можем через спец сущности - экшены. Логику экшенов
+пишем в не самих компонентах . В компон-х будем вызывать эти события, а
+описывать будем отдельно , на прямую никогда не меняем. И третье правило 
+касается непосредственной обработки.Обрабатываюся наши экшены в такой сущности
+ как редюсере. По сути редюсеры это обычные ф-ции. Эти ф-ции чистые т.е.
+ведут себя предсказуемо и полученные объекты state или другие, не мутируют
+их, а только читают и возвращают новое значение наружу не изменяя на прямую,
+также не обращаются к б.д. и не обращаются  к локал сторе. 
+
+----------------------- 008 Базовые сущности Redux
+ 
+событие action -> reduser  ->  store -> приложение (UI) и опять к событию
+reduser можно представить в виде фильтра , которая принимает store и
+конкретное событие ивыполняет заданное действие, после чего возвращает
+новый обновленный store и дальше на пользовательском экране отрисовывается
+
+-------------------------009 Базовое API Redux
+
+Из пяти методов используем два  creteStore(reduser,[preloaedState],[enhancer])
+applyMiddlewares(...middlewares) ну и
+Store API :  getState(), dispatch(action)
+
+npx create-react-app .
+npm install redux react-redux
+  npm audit fix --force
+удалил node_modules
+npm i
+  npm audit fix --force
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+или так  npm install react-redux --save --save-exact
+отсюда--!!!!-- https://monsterlessons.com/project/lessons/redux-js-vstuplenie
+!!!!!!!!!!!!!!! С ТЕКСТОМ ВИДЕО!!!!!!!!!!!! и комментариями  
+-----------------src/index.js 
+//import React from 'react';
+//import ReactDOM from 'react-dom/client';
+//import './index.css';
+//import App from './App';
+//import store from './app/store';
+//import { Provider } from 'react-redux';
+////////// const container = document.getElementById('root');
+////////// const root = ReactDOM.createRoot(container);
+////////// root.render(  <App   />   );
+
+import { createStore } from 'redux'
+
+const store = createStore()
+
+затем в консоли ошибка 
+bootstrap:27 Uncaught Error: Expected the root reducer to be a function. 
+Instead, received: 'undefined'
+Это потому, что на вход функции createStore нужно передать функцию,
+ которая будет изменять наш store.
+Допустим у нас будет приложение, которое работает с треками и плейлистами.
+тогда
+import { createStore } from 'redux'
+
+function playlist(state = []) {
+  return state;
+}
+
+const store = createStore( //createStoreбудет перечеркнуто
+playlist,
+);
+
+//export default store;
+
+Мы добавили функцию playlist, которая на вход получает state с дефолтным 
+значением и возвращает его. Как мы видим, в браузере пропали ошибки и мы
+ можем использовать наш store.
+И первое, что нас интересует - это как выглядит наш store. 
+Давайте законсолим его.
+console.log(store.getState());
+И сейчас это у нас пустой массив.
+
+ как нам подписаться на изменение нашего store, чтобы знать, что у нас 
+изменились данные в нем
+store.subscribe(() => {
+  console.log(store.getState());
+})
+
+
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+пишем в https://codesandbox.io/ 
+-------------------------09-redux-index.js
+import {createStore, combineReducers} from  'redux'
+
+редюсер выполняется
+const counterReducer = (state = 0, action) => {
+  if (action.type === 'INCREMENT') { return state + 1  }
+  return state }
+редюсер выполняется
+const todosReducer = (state = [], action) => {
+if (action.type ===  'ADD_TODO') { return [...state,  'это Redux']}
+ return state } 
+
+собирает все редюсеры
+const rootReducer = combineReducers({
+  counter: counterReducer ,
+  todos: todosReducer,
+})
+
+const store = createStore(rootReducer)
+console.log(store.getState())
+store.dispatch({ type:'INCREMENT'}) произошло событие
+console.log(store.getState())
+мы будем создавать store, описывать различную логику поведения Reducer-ов и
+придумывать к ним экшены и вызывать через dispatch те или иные события
+которые будут нам обновлять наш store и уже потребляться UI
+---------------------------------010-011 Пример с кликером
+----------- ----11-redux-index.js
+//reduser
+const counter = (state = 0, action) => {
+    if (action.type === "INCREMENT") {  return state + 1;  }
+    if (action.type === "DICREMENT") {  return state - 1;  }
+    if (action.type === "RESET") {     return  0;  }
+            return state
+}
+const store = createStore(counter)
+//создадим экшен
+const increment = { type: "INCREMENT" };
+const dicrement = { type: "DICREMENT" };
+const reset = { type: "RESET" };
+...
+store.subscribe(render);подпишемся на измаенения
+ 
+
+------------------------ 012 Action creators и их использование
+-----------12-redux-index.js
+мы посмотрели , что экшены бывают не просто объектами , но и фун-ями
+// action creators - ф-ции создающие экшены
+// const addTodo = () => { return { type:  'ADD_TODO'  }  }
+const addTodo = (title) => ({
+          type:  'ADD_TODO',
+          title,      //еще поле
+         // payload: {title}         //такой еще ключ с {} или переменная
+} )
+также в рамках редюсера можно использовать switch
+//reduser
+const todos = (state = [], action) => {
+    switch (action.type) {
+        case 'ADD_TODO': {
+  // структура не мутабельна(всегда генерируем новое состояние не изменяя старого
+  // состояния, а push всегда мутирует старое значение, поэтому push нельзя
+  //1  return state.push({     id: ++nextTodoId, ...
+    //2  return state.concat({  id: ++nextTodoId, ... т к создает НОВЫЙ МАССИВ на
+       // основании текущего и затем дабавит изменения
+  //3 современный подход  - спред оператор
+          return  [ ...state, { // и добавь новые значения
+               id: ++nextTodoId,
+              title: action.title,
+              completed: false,
+            }]
+        }
+--------------------------------013 Хранилище по умолчанию
+------------index.js
+ 
+//вторым параметром defaultValues значения, которые затирают начальные
+ в редюсере
+чаще их будем получать из локалстореджи
+const store = createStore(todos, defaultValues)
+
+//ниже это persist -сохранение чего-то
+// после перезагрузки браузера выдаем конкретный результат
+const defaultValues = [
+    {id: 0, title: 'hello', completed: false},
+    {id: 1, title: ' 2hello ', completed: false},
+    {id: 2, title: ' 3hello ', completed: false},
+]
+// более сложная вложенность
+const initialValues = {
+    todos: defaultValues,
+    user: {},
+}
+//вторым параметром defaultValues значения, которые 
+затирают начальные в редюсере
+const store = createStore(todos, defaultValues)
+
+//reduser
+const todos = (state = [ ], action) => {
+switch (action.type) {...
+
+-------------------------------------014 Итоги модуля
+3 принципа Redux
+State tree- единый источник, State-только для чтения,Все изменения -
+через чистые функции 
+Базрвые сущности Redux:  Store, Action, Reducer
+методы Redux и методы store
+Теперь все это надо подружить с React-ом ,
+для этого есть библи-ка   React-Redux
+
+================ ЧАСТЬ 03  React-redux на хуках =========================
+---------------------------015 Обзор модуля
+Дополнительные сущности предоставляет биб-ка react-redux и как это
+связать с react приложением ( взять store и связать с react)
+Также есть удобный инструмент для браузеров Redux DevTools и спомощью
+его наблядать за происходящим в нашем приложении
+Варианты организации кода
+Засширенный persist c LocalStorage
+Связь с роутингом и синхронизироваться с rect и с reux
+
+------------------------------016 Сущности react-redux
+ВСе наше приложение оборачивается сущностью Provider, предоставлен
+библ-ой react-redux. Кааждый компонент, который хочет потреблять данные он
+берет их из контекста. Любой Provider предполагает что есть некий Context и
+есть потребители этого контекста. Компонент через контекст может получить из
+хранилища данные и возможность на эта данные как-то влиять.
+   			Компонент
+                          context
+		useSelector	useDispatch	
+Хук useSelector - получить данные data из хранилища  Redux store
+Хук useDispatch - возвращает метод Dispatch , т.к. наш компонент об
+                  store ничего не знает
+Store будет передаваться в Provider.
+
+-----------------------------017 Кликер на React+Redux
+сделаем как на ванильном варианте
+----------index.js содержит
+root.render(
+    <Provider store={store}>
+    <App   />
+    </Provider>
+    )
+-----------------Есть store.js 
+Нужно объединить мой Redux store с react - приложением  и чтобы 
+UI позволял обновлять мой store.js (который состоит из редюсера - counter, из
+единственного значения store - просто цифры и три экшена - actions типы без 
+спроваждающих данных
+-----App.js
+содержит компонент кликер, пока в виде "картинки" Html без обработчиков.
+01:05 Итак с чего все начинается
+Нужно добавить зависимости npm install redux react-redux, уже установлены.
+--- index.js
+import { Provider } from "react-redux"; уже есть
+import { store } from "./store";     уже есть
+  <Provider store={store}> уже обернули
+и теперь у каждого компонента внутри провайдера есть 
+хуки useSelector  useDispatch для обращения к контексту  context
+---------App.js
+import { useSelector, useDispatch } from "react-redux";
+использую в компоненте Counter = () => (
+// взять мое число из моего хранилища через селектор с помощью
+//функции , по которой наш контекст определяет , что можно взять (это число)
+ //получает наше хранилище state его текущее состояние - это дерево,
+ //потом говорим что оттуда взять - сейчас это число
+    const count = useSelector((state) => state);
+...
+  <h2>{count}</h2> передали эту переменную , будет обновлятся
+
+//диспетчер для обновления
+    const dispatch = useDispatch();
+
+достанем экшены
+import { increment, decrement, reset } from "./store";
+и их пропишу
+    <button onClick={() => dispatch(decrement)}>-</button>
+    <button onClick={() => dispatch(increment)}>+</button>
+    <button onClick={() => dispatch(reset)}>reset</button>
+
+          <Counter />
+            <h1>Hello Redux</h1>
+            <Counter /> вторая копия может быть в шапке подвале
+виджеты
+    и всегда будут синхронизированы        
+        </div>
+
+------------018 Todo List на React+Redux-------------------------------
+-------index.js
+удалим StrictMode  и заменим на
+import { Provider } from "react-redux";
+  <Provider store={store}>   <App   />        </Provider>
+import { store } from "./store";
+------------------ App.js
+import { useSelector, useDispatch } from "react-redux";
+нужны экшены из стора
+import { addTodo, removeTodo, toggleTodo } from "./store";
+-------------------- store.js
+export const store = createStore(todos); // хранилище
+// action creators экшены как функции, ожидают вызова и конкретных данных
+export const addTodo = (title) => ({ type: "ADD_TODO", title });
+export const removeTodo = (id) => ({ type: "REMOVE_TODO", id });
+export const toggleTodo = (id) => ({ type: "TOGGLE_TODO", id });
+------------------ App.js
+//компонент NewTodo - форма
+const NewTodo = () => {
+//добавим для вызова новых тудушек в момент отправки формы   
+    const dispatch = useDispatch();
+ //вызов по onSubmit
+    const handleSubmit = (event) => { ...
+вызов экшена addTodo
+            dispatch(addTodo(event.target.title.value));
+и дальше в редюсер пологике
+Дальше компонент  TodoList  строчки или  "тудушки"
+    //т.к. state упрощенный без вложенностей
+    const todos = useSelector((state) => state);
+ // диспетчер для работы кнопок получим из контекста благодаря хук useDispatch
+    const dispatch = useDispatch();
+для кнопки удалить, у этого диспатча вызов метода removeTodo(айди)
+ <button onClick={() => dispatch(removeTodo(todo.id))}>   delete
+через редюсер отрабатывается экшен
+для inputa - как только произойдет событие onChange, мы хотим
+вызвать диспетчер с toggleTodo для конкретной тудушки с айди
+ onChange={() => dispatch(toggleTodo(todo.id))}
+через редюсер отрабатывается экшен
+
+----------- 019  Redux DevTools--------------------------------
+что происходит в redux, использовали логи. ва варианта.
+Но есть расширение для
+1)-браузера Redux DevTools и активируем , затем читаем что
+на гитхабе https://github.com/zalmoxisus/redux-devtools-extension
+нужно добавить строку
+ window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
+в export const store как параметр
+или 
+2)- альтернатива - чтобы упростить задачу, можно установить пакет npm:
+npm install --save redux-devtools-extension и затем
+ просто используйте devToolsEnhancer:
+import { createStore } from 'redux';
+import { devToolsEnhancer } from 'redux-devtools-extension';
+const store = createStore(reducer, devToolsEnhancer())
+///  /* preloadedState, */ devToolsEnhancer(
+////  // Specify name here, actionsBlacklist, actionsCreators and other options if needed
+//// ));
+
+----------------020 Вариант организации кода #1--------------------------------
+--------------src/store/index.js
+точка входа
+Отвечает за создание store
+import { createStore } from "redux";
+import {rootReducer} from "./reducers";
+// хранилище, второй парам-р для расширения в браузере
+export const store = createStore(rootReducer)
+//  window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
+--------------src/store/actions/todos-actions.js
+Здесь экшены
+// action creators экшены как функции, ожидают вызова и конкретных данных
+export const addTodo = (title) => ({......
+---------------src/store/actions/filters-actions.js
+//события каких-либо фильтров
+---------------src/store/reducers/todos-reducer.js
+//редюсер
+export const todos = (state = [], action) => {
+    switch (action.type) {
+      case "ADD_TODO": { //добавляем строку данных
+........
+----------------src/store/reducers/filter-reducer.js
+----------------src/store/reducers/index.js
+точка входа
+будет объединять все редюсеры оторые живут впапке src/store/reducers/
+import {combineReducers} from "redux";
+//пока один редюсер
+import {todos} from  './todos-reducer'
+export const rootReducer = combineReducers({  todos  })
+---------------------App.js
+import { addTodo, removeTodo, toggleTodo } from "./store/actions/todos-actions";
+...... 
+ const todos = useSelector((state) => state.todos);
+------------------------src/index.js
+в другом месте хранится
+import { store } from "./store/index";
+----------------src/store/constants/todos-const.js
+export const ADD_TODO ="ADD_TODO"
+export const REMOVE_TODO ="REMOVE_TODO"
+export const TOGGLE_TODO ="TOGGLE_TODO"
+используются в экшенах и редюсерах
+заменим в todos-actions.js и в todos-reducer.js
+----------------src/store/todos/todos-selectors.js
+import {useSelector} from "react-redux";
+     export const allTodos = (state) => state.todos
+
+У нас есть уже селектор (state) в App.jsx, т.е. в useSelector передаем
+функцию и вызываем эту фу-ю (state) => state.todos
+//компонент - список const TodoList = () => { 
+// const todos = [] вначале пустой
+   //т.к. state упрощенный без вложенностей
+    const todos = useSelector((state) => state.todos);
+Могли бы хранить эту ф-ю как отдельную сущность назовем allTodos
+--------------------------------- App.js
+import {allTodos} from './store/selectors/todos-selectors'
+      const todos = useSelector( allTodos);
+Сейчас у нас есть тудушки - массив в котором что-то лежит, теоретически
+у нас есть фильтры filter-reducer.js и мы захотим показать, в зависимости
+от фильтров все тудушки, завершенные тудушки или не завершенные тудушки. И
+следовательно мы б сделали селекторы которые выбирали в зависимости от 
+статуса completed (это булево поле) конкретные тудушки, например селектор  
+  export const activeTodos = (state) => state.todos.filter( todo => 
+       todo.completed === false )
+здесь селектор - activeTodos и в App.js   
+const todos = useSelector( activeTodos);
+
+-------------021 Вариант организации кода #2----------------------
+организованы не по категориям как экшены,редюсеры и прочее, а по
+сущностям - особенно когда их много
+пока сущность одна todos, а вторая папка-сущность filters предполагаем,
+что она будет позже . Вточке входа у нас создается store и при этом
+импортируем createStore, rootReducer. В root-reducer.js собираем все
+редюсеры из папок и комбинируем в единую логику. И каждая сущность
+хранит в себе все, что ей нужно.
+второй вариант в папке /src/store2v
+-------- /src/store2v/index.js
+----------------- /src/store2v/todos
+-------------------- /src/store2v/todos/todos-actions.js
+-------------------- /src/store2v/todos/todos-reducer.js
+-------------------- /src/store2v/todos/todos-const.js
+-------------------- /src/store2v/todos/todos-selectors.js
+----------------- /src/store2v/filteres
+до этого в первой версии точка входа была в
+--------/src/store/reduser/index.js
+а теперь в
+----------------- /src/store2v/root-reducer.js
+и потребителем этого объекта будет наша точка входа
+-------- /src/store2v/index.js
+дальше в основном
+-------- /src/index.js
+переподключим с import { store } from "./store/index"  на
+import { store } from "./store2v/index";
+На уровне приложения
+---------- App.jsx
+{allTodos, activeTodos} from './store/selectors/todos-selectors' 
+на
+import {allTodos, activeTodos} from './store2v/todos/todos-selectors'
+и import { addTodo, removeTodo, toggleTodo } from "./store/actions/todos-actions";
+на import { addTodo, removeTodo, toggleTodo } from "./store2v/todos/todos-actions" 
+
+-----------022 Альтернативная точка входа------------------------
+-------- /src/store2v/index.js
+//export const store = createStore(rootReducer) заменим на
+export const configureStore = () => { return createStore(rootReducer) }
+----------/src/index.js
+//import { store } from "./store2v/index";
+import { configureStore } from "./store2v/index";
+тогда const store = configureStore() //вызов функции
+получается !!!!!!!!!!!!!! ПРАВИЛЬНАЯ КОНФИГУРАЦИЯ
+с точки зрения функционала ни чего не меняется , а с точки зрения
+тестирования такая ф-я позволяет создавать  сколько угодно независимых
+друг от друга store, что при тестировании удобно
+ Еще один альтернативный подход- это создание компонента который называют 
+рутом Root.jsx
+------------------/src/Root.jsx
+import {Provider} from "react-redux";
+import App from "./App";
+//import { configureStore } from "./store2v/index"; уже ненужен
+
+//const store = configureStore() //вызов функции
+
+// сюда можно было бы подключить провайдеры для
+// роутинга и т.д.
+  export const Root = ({store}) =>(
+<Provider store={store}>
+    <App   />
+</Provider>
+)
+----------------/src/index.js
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+ 
+//import { store } from "./store2v/index";
+import { configureStore } from "./store2v/index";
+
+import {Root} from './Root';
+
+const store = configureStore() //вызов функции
+
+const  rootElement = document.getElementById('root');
+
+ReactDOM.render(
+    <Root store={store} />,
+    rootElement
+    )
+-----------023 Вариант TodoList с фильтрами--------------------------
+-----src/components/NewTodo.jsx
+//компонент NewTodo - форма   перенесем из src/App.js
+-----src/components/TodoList.jsx
+//компонент - список   перенесем из src/App.js
+---------------src/store2v/filters/filters-const.js
+для установки фильтра
+export const SET_FILTER = 'SET_FILTER'
+---------------src/store2v/filters/filters-reducer.js
+import {SET_FILTER} from './filters-const'
+
+---------------src/store2v/filters/filters-actions.js
+import {SET_FILTER} from './filters-const'
+export const setFilter = (filter) => ({
+  type: SET_FILTER,
+  filter,
+})
+---------------src/store2v/filters/filters-selectors.js
+export const selectActiveFilter = state => state.filters;
+
+---------------src/store2v/root-reduser.js
+import {filters} from './filters/filters-reducer';
+-------------------src/components/Filters.jsx
+компонент с тремя кнопками подключим к приложению -----App.js
+будут два Хука useSelector, useDispatch 
+--------------------------App.js
+import { Filters} from  './components/Fiters'
+   <NewTodo />     <Filters  />       <TodoList />
+-------------------- /src/store2v/todos/todos-selectors.js
+// селектор- здесь варианты выборки данных из state
+export const selectVisibleTodos = (state, filter) => {
+   // проверка какой фильтр
+    switch (filter) {...
+
+-----------------------024 Синхронизация с localStorage---------------
+-------------------- /src/store2v/local-storage.js
+------------------- /src/store2v/index.js
+import {loadState}  from  './local-storage'
+загрузка
+  const persistedState = loadState()
+загруаем вторым параметром
+  const store = createStore( rootReducer, persistedState,  ...
+
+//вызывается калбэк , когда store изменился. И передать актуальное
+ //   состояние store через доступный getState()
+    store.subscribe(() =>{
+      //  saveState(store.getState())
+   //хотим хранить только тудусы , без фильтра
+   // т.е. при перезагрузкивозратимся ко всем записям
+        saveState ({
+            todos: store.getState().todos
+вызывается часто, чобы регулировать через сколько записыват загрузим
+npm i --save lodash
+добавим
+import  throttle from  'lodash/throttle'
+обернем
+    store.subscribe(throttle(() =>{
+      //  saveState(store.getState())
+   //хотим хранить только тудусы , без фильтра
+   // т.е. при перезагрузкивозратимся ко всем записям
+   saveState ({ todos: store.getState().todos  })
+    }, 1000) ) время ограничения
+
+---------------025 Добавление роутинга---------------------------
+npm i react-router-dom
+подключаем роутинг
+------------------src/Root.jsx
+import {BrowserRouter, Routes, Route} from  'react-router-dom'
+  export const Root = ({store}) => (
+<Provider store={store}>
+    <Router>
+        <Routes>
+            <Route path="/"  element= {<App />} />
+            <Route path=":filter"  element= {<App />} />
+
+        </Routes>
+        <App />
+    </Router>
+</Provider>
+)
+
+-----------------------src/components/Filters.jsx
+import {Link} from "react-router-dom";
+Все кнопочки заменим на линки
+т к фильтр переезжает в роутинг нет смысла хранить инормацию о фильтрах в store
+удаляемimport {selectActiveFilter} from '../store2v/filters/filters-selectors';
+удаляемimport { setFilter } from '../store2v/filters/filters-actions';
+ссылки будут использоваться как параметры
+  <Link to= '/all' style ={{color: activeFilter === 'all' ? 'red' : 'black'}}> all</Link>
+---------src/Root.jsx    
+<Route path="/"  element= {<App />} >
+        <Route path=":filter"  element= {<App />} />
+</Route>
+-----------------------src/components/Filters.jsx
+import {Link, useParams} from "react-router-dom";
+const Filters = () => {
+    const {filter: activeFilter} =useParams()  return(...
+--------------------src/store2v/root-reducer.js
+export const rootReducer = combineReducers({
+    todos
+ ///////ненужен   filters
+})
+-----------------------src/components/TodoList.jsx	
+import {useParams} from  'react-router-dom'
+    const {filter} = useParams()
+ const todos = useSelector(state => selectVisibleTodos(state, filter))     
+
+----------------------026 Итоги модуля----------------------------------
+        REACT-REDUX
+Наше приложение оборачивается в Provider и благодаря ему у нас есть контекст которым
+пользуемся через Хук useSelector - принимает ф-ции и позволяет выбрать данные из
+хранилища и useDispatch который достает из контекста ф-цию Dispatch позволяющую вызывать
+экшены. Также поговорили о Селекторах(геттеры) которым мы передаем Хук useSelector и что их
+мыможем хранить отдельно и непросто получать значения а делать предобработку перед выдачей 
+значения в приложение. Наш store может не напрямую создаваться единожды и подключатся к
+приложению, а можна при необходимости создавать отдельную функцию для создания store, что
+может помочь для тестирования сложных ситуаций. И поговорили про Persist соответственно
+сохранение данных в  localStorage и синхронизация с ними , ну и роутинг.
+
+====================================ЧАСТЬ 4 ПРОЕКТ 1 =================
+---------------------------027 Обзор проекта----------------- -------------------------
+https://www.frontendmentor.io/
+FILTER BY  Free,Intermediate
+Job listings with filtering-Списки вакансий с фильтрацией
+В этом задании вы будете использовать JavaScript для фильтрации вакансий по выбранным категориям. 
+Мы предоставляем локальный файл JSON, чтобы помочь вам попрактиковаться в работе с данными JSON.
+
+---------------------028 Настройка окружения---------------------------------------------
+https://www.frontendmentor.io/challenges/job-listings-with-filtering-ivstIPCt/hub/job-listings-with-filtering-fIW9pdH-oK
+скачал с сайта архив static-job-listings-master
+
+npx create-react-app .
+------------src/index.js
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import App from './App';
+
+const container = document.getElementById('root');
+const root = ReactDOM.createRoot(container);
+root.render(   <App   /> )
+------------src/App.js
+export default function App() {
+  return ( <div className="App"> <h1>Hello Redux</h1> </div>   )
+}
+------установил редакс в рабочее состояние-----------------
+
+----------------030 Добавление провайдера и пустого стора--------------
+итак  редакс уже установлен, пойти в точку входа и добавить провайдер
+------------src/index.js
+import { Provider } from "react-redux";
+Провайдер принимает один обязательный пропс - store, и его вначале нужно создать
+---------------------src/store/index.js
+import { createStore } from "redux";
+// хранилище, второй парам-р для расширения в браузере
+// передадим редюсер rootReducer
+  const store = createStore(rootReducer)
+---------------------src/store/root-reducer.js
+import {combineReducers } from "redux"; надо установить редакс
+export const rootReducer = combineReducers({})
+---------------------src/store/index.js
+import {rootReducer} from "./root-reducer";
+----------------------src/index.js
+import { store } from "./store";
+   <Provider store={store}>
+        <App   />
+  </Provider>
+
+npm install redux react-redux
+/////////////////////////////////
+6 high severity vulnerabilities
+
+To address all issues (including breaking changes), run:
+  npm audit fix --force
+//////////////////////////////
+npm с некоторых пор проверяет все пакеты на уязвимости в js коде и предупреждает 
+Вас о найденыых. ищет это все простейший бот на эвристиках, по различным патернам
+работать они никак не мешают, Вас просто предупредили, что в установленных пакетах 
+имеются потенциально небезопасные фрагменты кода
+/////////////все работает////////////////////
+Дальнейшие редюсеры, которые будут формировать хранилище store попадут в провайдер
+Provider и мы сможем потреблять через useSelector нужные нам значения. 
+Приступим к созданию редюсеров
+
+-----------------------031 Редьюсер вакансий--------------------------
+ Логики в редаксе должно быть две, у нас есть набор с данными - карточки и эти
+данные видими в разных вариантах. Нам нужно уметь эти данные добавлять каким-либо
+образом, а добавлять из джейсон файла (типа реальный запрос на сервер через redux) и
+при получении данных могли положить в store и у нас будут селекторы отвечающие за
+правильную фильтрацию - это то что касается карточек. Второй редюсер будет отвечать за
+фильтры, он будет уметь добавлять фильтры убирать по одному либо все вместе.
+Вся логика- это карточки и фильтры
+Итак
+ в папке store еще две папки filters и positions в каждой из них будет экшен, редюсер
+и селекшен
+position-reducer.js position-actions.js position-selectors.js
+filter-reducer.js filter-actions.js filter-selectors.js 
+-------------------------src/store/positions/position-actions.js
+добавление 
+// экшен  добавляющий все позиции
+// константы храним в экшенах
+export const ADD_POSITIONS = 'ADD_POSITIONS';
+//принимает позиции и возвращаеи  объект
+export const addPositions = (positions) => ({
+    type: ADD_POSITIONS,
+    positions,
+});
+-------------------------src/store/positions/position-reducer.js
+//создание функции принимает массив и экшен
+export const positionReducer = (state = [], action) => {
+    switch(action.type) {
+        case ADD_POSITIONS: {
+  //один массив будет заменен на другой           
+            return action.positions;
+        }
+теперь добавим в 
+---------------------------src/store/root-reducer.js
+import {positionReducer} from  './positions/position-reducer'
+
+export const rootReducer = combineReducers({
+    positions: positionReducer
+
+-------------------------src/store/positions/position-selectors.js
+// позиции будут зависеть от стэйта и от набора фильтров
+export const selectVisiblePositions = (state, filters = []) => {
+ // или фильтры есть
+    return state.positions.filter(
+              pos => {
+ // соберем фильтры относящиеся к этой конкретной позиции
+    // в массив сконтектанируем
+        const posFilters = [].concat(pos.role,
+            pos.level, ...pos.languages, ...pos.tools);
+//теперь есть набор фильтров привязанных к конкретной позициии
+  // every проверит каждое значение filters в значениях posFilters
+  // если соответствует фильтру то будет true и ложим  в state.positions
+        return filters.every(filter => posFilters.includes(filter))
+                          })
+------------------------src/App.js 
+import {useEffect} from 'react';
+import {useDispatch} from 'react-redux';
+при загрузке приложения , с помощью useEffect делаем запрос
+к бд
+Мы хотим данные из джейсона отправить в разметку
+// экшонс ожидает позиции
+import {addPositions} from './store/positions/position-actions';  
+import data from './mock/data.json'; //сами данные
+
+export default function App() {
+    const dispatch = useDispatch() //для работы с редаксом
+  //useEffect делает асинронный запрос  на сервер за данными
+useEffect(() => {
+        dispatch(addPositions(data)) данные получим
+    })
+// И в нашем редакс приложении появляються данные
+---------------src/components/JobList.jsx------------------
+через useSelector получаем нужные нам данные
+
+--------032 Редьюсер фильтрации-------------------------
+filter-reducer.js filter-actions.js filter-selectors.js 
+-------------------------src/store/filter/filter-actions.js
+нужно добавлять по одному фильтру, удалять по одному фильтру и
+уметь удалять все фильтры
+//принимает строковое значение фильтра
+export const addFilter = (filter) => ({
+    type: ADD_FILTER,  filter, })
+
+export const removeFilter = (filter) => ({
+    type: REMOVE_FILTER,     filter,   })
+
+export const clearFilter = {   type: CLEAR_FILTER, }
+-------------------------src/store/filter/reducer-actions.js
+     case ADD_FILTER: { return [...state, action.filter]; }
+   case REMOVE_FILTER: {
+            return state.filter(item => item !== action.filter);
+        }
+    case CLEAR_FILTER: {  return [];    }
+
+-------------------------src/store/root-reducer.js
+это редюсер для наших фильтров
+добавим фильтры
+import {combineReducers } from "redux";
+ import {filterReducer} from './filters/filter-reducer'
+import {positionReducer} from  './positions/position-reducer'
+export const rootReducer = combineReducers({
+    positions: positionReducer,
+    filters:filterReducer
+ })
+-------------------------src/store/filter/filter-selectors.js
+//фильтры в хранилище под названием filters
+export const selectFitlers = (state) => state.filters;
+
+Теперь это нужно все подключить к UI
+компонет FilterPanel должна выбирать актуальные значения фильтров и
+уметь удалять эти значения и кнопка Clear должна ощущать эти значения
+и на уровне JobPosition там где отрисовываються бэйджики {badges.map(item...
+должен уметь добавлять или изменять бэйджики
+
+-----------033 Механизм добавления фильтров------------------
+пока  наше приложение не знает о фильтрах
+Итак Badge.jsx принимает пропсы и в т.ч. события
+const Badge = ({   variant = 'basic',   colorScheme = 'light',
+  children,   onClear,   onClick,
+итак должны создать функцию которая работает с нашим редаксОм, которая 
+делает диспатчь конкретного экшена и еще передает конкретную строку и передать
+каким-то образом в  JobPosition там где отрисовываються бэйджики
+Нам нужно один раз создать ф-ю на уровне JobList и передать ее саму как ф-ю
+вместе со всеми остальными пропами в наш компонент JobPosition
+-------------------/src/components/JobList.jsx 
+добавим useDispatch
+import {useSelector, useDispatch} from 'react-redux';
+создам   const dispatch =useDispatch()
+и создадим ф-ю которая будет иметь добавлять фильтры
+import {addFilter} from "../store/filters/filter-actions"
+    const positions = useSelector(selectAllPositions);
+const handleAddFilter = (filter) => {
+dispatch(addFilter(filter))
+теперь нужно пробросит в  JobPosition
+    return (         <div className='job-list'>
+            {positions.map(item => (
+                <JobPosition key={item.id}
+пробрасываем ф-ю в каждый экземпляр компонента
+                             handleAddFilter={handleAddFilter}
+                             {...item}  /> ...
+----------------/src/components/JobPosition.jsx 
+добавляю новый пропс  const JobPosition = ({ ... handleAddFilter, ...
+типа типизую 
+JobPosition.propTypes = { ... handleAddFilter: PropTypes.func, ...
+спускаемся до наших бэйджов и вешаем на клик нашу ф-ю 
+        <Stack>
+          {badges.map(item => (
+            <Badge key={item}
+            onClick={() => handleAddFilter(item) }
+            >{item}</Badge>
+          ))}
+        </Stack>
+наша ф-я вызовется на уровне компонента JobList.jsx и передаст значение
+
+----------------034 Удаление фильтров и их очистка--------------------
+сами фильтры живут на уровне панели - компонент FiterPanel.jsx
+фильтры будем брать из store - useSelector
+и чтоб удалять фильтры    - useDispatch
+----------------/src/components/FiterPanel.jsx 
+import {useSelector, useDispatch} from "react-redux";
+//понадобиться селектор
+import {selectFitlers} from "../store/filters/filter-selectors";
+const FilterPanel = () => {
+с помощью селектора получаем фильтры находящиеся в state
+const currentFilters = useSelector(selectFitlers)
+выводим
+        <Stack>  {currentFilters.map(filter => (
+                <Badge
+                     key={filter}
+                       variant="clearable">{filter}</Badge>
+                   ))}         </Stack>
+
+Теперь,в браузере, при нажатии на кнопки карточки ,бэджики появляются верхней
+панели для фильтра. Если панелька пустая(нет фильтров), не отображаем  
+ if (currentFilters.length === 0 )  {  return null }
+Теперь как панель фильтров сбросить, нужна функция диспатча и соответствующий
+экшен который мы создали
+----------------/src/components/FiterPanel.jsx 
+import {removeFilter, clearFilter} from "../store/filters/filter-actions";
+ const  dispatch = useDispatch()
+...
+<button className='link' onClick={() => dispatch(clearFilter)} >Clear</button>
+Теперь в браузере очищает
+Чтобы удалить конкретный фильтр с панели фильтров на компоненте UI есть
+onClear и еще есть класс variant === 'clearable' т.е. кнопочка для удаления
+  <div className='badge-remover' onClick={onClear}>  <Remove /> </div>
+Поэтому в проп передаем из FiterPanel.jsx
+----------------/src/components/FiterPanel.jsx 
+на панели при нажатии кнопки через пропс передается кнопка-фильтр для удаления
+     <Badge  key={filter}
+                  variant="clearable"
+        onClear={() => dispatch(removeFilter(filter))} удаление на бэджик
+                           >      {filter}     </Badge>
+
+04:35 Осталось добавить другой селектор  в 
+-------------------/src/components/JobList.jsx 
+import {selectAllPositions, selectVisiblePositions//как будем фильтровать
+в store/positions/position-selectors.js
+// позиции будут зависеть от стэйта и от набора фильтров
+export const selectVisiblePositions = (state, filters = []) => {
+фильтры на уровне jobList мы должны получить
+
+
+-------------------/src/components/JobList.jsx  
+import {selectFitlers} from "../store/filters/filter-selectors";
+получаем из --------store/filters/filter-selectors"
+//фильтры в хранилище под названием filters
+export const selectFitlers = (state) => state.filters;
+-------------------/src/components/JobList.jsx 
+получим селектор фильтров и
+  const currentFilters = useSelector(selectFitlers)
+получим актуальные фильтры которые находятся в state
+и теперь  const positions = useSelector(selectAllPositions);
+ заменим на 
+ const positions = useSelector((state) =>
+            selectVisiblePositions(state, currentFilters))
+Теперь данные отбираются по фильтру
+и их выводим
+...
+    <div className='job-list'>
+            {positions.map(item => ( ...
+
+--------------035 Публикация проекта-------------------------------------------------
+https://github.com/new
+
+
+git add -A   добавит все наши изменения в текущий статус
+git commit -m "projekt test ttt"  зафиксируем наши поление изменения 
+свяжем с гитхабом
+Repository name react-redux27--2022-nepomnyach
+
+
+
+
+ 
+Create repository и подсказка , нужна строка
+git remote add origin https://github.com/vav67/05nepomnyasci-react.git
+происходит объединение локального репозитория с удаленным
+git push -u origin master
+объединили ветки локаль и удаленку
+обновив увидим наш проект
+секрет 
+зайдем настройки Secrets  new repository secret
+REACT_APP_API_KEY     649b0731
+Add secret
+это зависимость для разработки и мы не хотим чтобы она у нас в итоговый проект 
+собиралась поэтому ключ --save-dev
+npm install gh-pages --save-dev
+
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+										

@@ -1,10 +1,122 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="BranchesTreeState">
+    <expand>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="LOCAL_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+    </expand>
+    <select />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="409cb334-1c8a-4802-b8a2-ba7fa3a121a6" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/public/images/account.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/images/eyecam-co.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/images/faceit.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/images/insure.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/images/loop-studios.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/images/manage.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/images/myhome.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/images/photosnap.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/images/shortly.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/images/the-air-filter-company.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/App_n.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/UI/Badge.jsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/UI/Card.jsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/UI/Stack.jsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/assets/images/bg-header-desktop.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/assets/images/bg-header-mobile.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/assets/images/favicon-32x32.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/assets/images/icon-remove.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/FilterPanel.jsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/JobList.jsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/JobPosition.jsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/JobPosition_r.jsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/TheHeader.jsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/index_n.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/mock/data.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/store/filters/filter-actions.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/store/filters/filter-reducer.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/store/filters/filter-selectors.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/store/index.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/store/positions/position-actions.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/store/positions/position-reducer.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/store/positions/position-selectors.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/store/root-reducer.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/App.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/App.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/App.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/App.test.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/index.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/index.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/logo.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/reportWebVitals.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/setupTests.js" beforeDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ComposerSettings">
+    <execution />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectId" id="2FquAwGFKBfKI0qVxNHeAV9YgM4" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/components" />
+    <property name="nodejs_package_manager_path" value="npm" />
     <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
+    <property name="vue.rearranger.settings.migration" value="true" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\qq\PhpstormProjects\react-redux27--2022-nepomnyach\src\components" />
+      <recent name="C:\Users\qq\PhpstormProjects\react-redux27--2022-nepomnyach\src" />
+    </key>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="409cb334-1c8a-4802-b8a2-ba7fa3a121a6" name="Default Changelist" comment="" />
+      <created>1665231795316</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1665231795316</updated>
+      <workItem from="1665231796354" duration="17480000" />
+      <workItem from="1665309311726" duration="14755000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="1074" y="244" width="672" height="677" key="run.anything.popup" timestamp="1665239574891">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="1074" y="244" width="672" height="677" key="run.anything.popup/0.0.1920.1040@0.0.1920.1040" timestamp="1665239574891" />
   </component>
 </project>
